@@ -1,10 +1,10 @@
 # 🤖 Bộ Prompt Mẫu AI QA (AI QA Prompt Engineering)
 
-Tài liệu ghi chép chi tiết **Prompt 1: Sinh Test Cases Tự Động** được sử dụng trong dự án kiểm thử hệ thống bán hàng **SauceDemo** ([https://www.saucedemo.com](https://www.saucedemo.com)).
+Tài liệu ghi chép chi tiết các câu Prompt chính được sử dụng trong dự án kiểm thử hệ thống bán hàng **SauceDemo** ([https://www.saucedemo.com](https://www.saucedemo.com)).
 
 ---
 
-## 📌 PROMPT 1: SINH 15 TEST CASES KIỂM THỬ SAUCEDEMO (PRIMARY PROMPT USED)
+## 📌 PROMPT 1: SINH 15 TEST CASES KIỂM THỬ SAUCEDEMO (TEST CASE GENERATION PROMPT)
 
 Prompt được thiết kế theo kỹ thuật **Prompt Engineering** chuẩn hóa (Role + Context + Requirement + Constraints + Output Format):
 
@@ -47,9 +47,35 @@ Mỗi Test Case bao gồm các trường thông tin:
 
 ---
 
+## 📌 PROMPT 2: CHUYỂN ĐỔI 15 TEST CASES THÀNH MÃ PLAYWRIGHT (CODE GENERATION PROMPT)
+
+Prompt được sử dụng để chỉ đạo AI tạo mã nguồn kiểm thử tự động Playwright `tests/saucedemo.spec.js`:
+
+```text
+[ROLE]: 
+Bạn là Senior Playwright Automation Developer.
+
+[CONTEXT]: 
+Tôi đã có danh sách 15 Test Cases kiểm thử ứng dụng SauceDemo (https://www.saucedemo.com).
+
+[TASK]:
+Chuyển đổi toàn bộ 15 Test Cases thành file mã nguồn tự động Playwright `tests/saucedemo.spec.js`.
+
+[REQUIREMENTS]:
+1. Sử dụng thư viện `@playwright/test` chuẩn ES Module.
+2. Với mỗi Test Case, tự động chụp ảnh màn hình bằng chứng và lưu vào `test-results/screenshots/`.
+3. Tạo hàm `logEvidence()` ghi vết thời gian thực thi vào file log `test-results/logs/execution.log`.
+4. Sử dụng các thuộc tính data-test thực tế của SauceDemo (`data-test="username"`, `data-test="password"`, `data-test="login-button"`...).
+5. Với TC-PROD-04 (Problem User) và TC-CHK-03 (Postal Code âm), thiết lập assertion theo kỳ vọng chuẩn QA để kiểm thử FAIL và phát hiện Bug tự động.
+
+[OUTPUT FORMAT]: Mã nguồn JavaScript Playwright hoàn chỉnh, sạch sẽ, không dùng placeholder.
+```
+
+---
+
 ## 📝 GIẢI THÍCH KỸ THUẬT NGHỆ THUẬT VIẾT PROMPT (PROMPT ANALYSIS)
 
-1. **Bối cảnh & Vai trò (Role & Context)**: Giúp AI hiểu rõ góc nhìn của một Senior QA Lead khi đánh giá chất lượng sản phẩm E-Commerce.
-2. **Phân bổ định lượng rõ ràng**: Yêu cầu AI tạo đúng 15 Test Cases theo đúng tỷ lệ 5 Login - 4 Product - 3 Cart - 3 Checkout để bao quát toàn bộ ứng dụng.
+1. **Bối cảnh & Vai trò (Role & Context)**: Giúp AI hiểu rõ góc nhìn của một Senior QA Lead & Automation Engineer khi kiểm thử ứng dụng E-Commerce.
+2. **Phân bổ định lượng rõ ràng**: Yêu cầu AI tạo đúng 15 Test Cases theo tỷ lệ 5 Login - 4 Product - 3 Cart - 3 Checkout để bao quát toàn bộ ứng dụng.
 3. **Ràng buộc loại trừ (Constraints)**: Ngăn chặn AI tự bịa ra các tính năng không tồn tại trên SauceDemo (Anti-Hallucination).
-4. **Cấu trúc đầu ra (Output Format)**: Đảm bảo dữ liệu đầu ra đồng nhất, giúp dễ dàng chuyển đổi thành mã tự động Playwright.
+4. **Cấu trúc đầu ra (Output Format)**: Đảm bảo dữ liệu đầu ra đồng nhất, giúp dễ dàng chuyển đổi thành mã tự động Playwright thực thi thực tế.

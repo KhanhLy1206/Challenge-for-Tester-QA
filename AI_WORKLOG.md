@@ -7,6 +7,7 @@ Tài liệu ghi chép chi tiết quá trình ứng dụng AI, kiểm chứng th�
 ## 1. AI Tools Used
 - **ChatGPT**: Được sử dụng làm trợ lý AI chính để phân tích yêu cầu, xây dựng Test Cases, thiết kế Prompt Engineering và hỗ trợ review kết quả kiểm thử.
 - **Antigravity**: Được sử dụng để hỗ trợ triển khai và thực hiện các tác vụ trong project, bao gồm hỗ trợ làm việc với mã nguồn, cấu trúc project và quá trình kiểm thử tự động.
+- **Playwright Framework**: Được sử dụng để tự động hóa 15 kịch bản kiểm thử trên trình duyệt Chromium, tự động chụp ảnh màn hình bằng chứng (Evidence Screenshots) và ghi nhật ký thực thi.
 - **Git/GitHub**: Được sử dụng để quản lý phiên bản và lưu trữ các tài liệu của challenge.
 
 ---
