@@ -105,10 +105,25 @@ Các failure được phân tích và chia thành:
 .cart_item .inventory_item_name
 ```
 Sau khi sửa, `TC-CART-01` đã PASS trên cả 3 browsers.
+### Final Execution
+
+Sau khi sửa lỗi automation của TC-CART-01, toàn bộ test suite được thực thi lại.
+
+Tổng số lượt thực thi: 45
+Passed: 39
+Failed: 6
+Thời gian thực thi: 15.7 giây
+
+6 failure còn lại đều thuộc về 2 application defects và được tái hiện trên cả 3 browsers:
+| Test Case | Chromium | Firefox | WebKit | Phân loại |
+|---|:---:|:---:|:---:|---|
+| `TC-PROD-04` | ❌ | ❌ | ❌ | Application Defect |
+| `TC-CHK-03` | ❌ | ❌ | ❌ | Application Defect |
 
 ### Confirmed Application Defects
 Hai lỗi ứng dụng được xác nhận:
-1. **`TC-PROD-04`**: Tài khoản `problem_user` sử dụng broken/wrong image asset chứa `sl-404`.
-2. **`TC-CHK-03`**: Hệ thống chấp nhận Postal Code âm `-12345` và cho phép chuyển sang Checkout Overview.
+1. **`TC-PROD-04`**: Với tài khoản `problem_user`, lỗi broken/wrong image asset chứa `sl-404` được tái hiện trên Chromium, Firefox và WebKit.
+
+2. **`TC-CHK-03`**: Hệ thống chấp nhận Postal Code âm `-12345` và cho phép chuyển sang Checkout Overview. Hành vi này được tái hiện trên Chromium, Firefox và WebKit.
 
 Các lỗi trên được giữ nguyên trong automated test để đảm bảo hệ thống kiểm thử có khả năng phát hiện application defect.
