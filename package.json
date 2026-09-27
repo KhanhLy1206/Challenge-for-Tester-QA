@@ -1,26 +1,15 @@
 {
-  "name": "baitap",
+  "name": "ai-qa-engineer-saucedemo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
+  "description": "AI QA Engineer Assistant - SauceDemo Automated Testing Framework",
+  "main": "tests/saucedemo.spec.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:report": "npx playwright show-report"
   },
-  "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/KhanhLy1206/Challenge-for-Tester-QA.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/KhanhLy1206/Challenge-for-Tester-QA/issues"
-  },
-  "homepage": "https://github.com/KhanhLy1206/Challenge-for-Tester-QA#readme",
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "@types/node": "^26.6.3"
+    "@playwright/test": "^1.45.0"
   }
 }
