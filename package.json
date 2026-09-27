@@ -1,0 +1,26 @@
+{
+  "name": "baitap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhanhLy1206/Challenge-for-Tester-QA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KhanhLy1206/Challenge-for-Tester-QA/issues"
+  },
+  "homepage": "https://github.com/KhanhLy1206/Challenge-for-Tester-QA#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.6.3"
+  }
+}
