@@ -20,7 +20,7 @@ Tài liệu Chiến lược Kiểm thử cho dự án **AI QA Assistant** trên 
   - Kiểm tra tài khoản bị khóa `locked_out_user`.
   - Đăng nhập với mật khẩu không chính xác.
   - Kiểm tra validation khi để trống thông tin credentials.
-  - Đo độ trễ phản hồi đăng nhập của `performance_glitch_user`.
+  - Quan sát thời gian phản hồi của `performance_glitch_user`, không áp dụng ngưỡng PASS/FAIL khi chưa có SLA hiệu năng cụ thể.
 
 * **Phân hệ Product (Danh mục sản phẩm)**:
   - Kiểm tra hiển thị đúng 6 sản phẩm với đầy đủ Tên, Giá tiền ($), Hình ảnh thumbnail và Nút Add to cart.
@@ -49,10 +49,10 @@ Tài liệu Chiến lược Kiểm thử cho dự án **AI QA Assistant** trên 
 | STT | Test ID | Module | Phân loại | Tên Test Case | Mục tiêu kiểm thử |
 | :---: | :---: | :---: | :---: | :--- | :--- |
 | 1 | `TC-LOG-01` | Login | Positive | Standard User Login Success | Đảm bảo luồng đăng nhập hợp lệ hoạt động đúng |
-| 2 | `TC-LOG-02` | Login | Negative | Locked Out User Login Attempt | Kiểm tra cơ chế khóa tài khoản bảo mật backend |
+| 2 | `TC-LOG-02` | Login | Negative | Locked Out User Login Attempt | Kiểm tra hệ thống từ chối đăng nhập đối với tài khoản bị khóa |
 | 3 | `TC-LOG-03` | Login | Negative | Invalid Password Attempt | Đảm bảo chặn truy cập với mật khẩu không đúng |
 | 4 | `TC-LOG-04` | Login | Negative | Login with Empty Credentials | Kiểm tra bắt lỗi bắt buộc nhập dữ liệu inline |
-| 5 | `TC-LOG-05` | Login | Performance | Performance Glitch User Delay Check | Đo lường độ trễ mạng và phản hồi hệ thống |
+| 5 | `TC-LOG-05` | Login | Performance Observation | Performance Glitch User Delay Check | Quan sát thời gian phản hồi của luồng đăng nhập đối với tài khoản performance_glitch_user |
 | 6 | `TC-PROD-01` | Product | Positive | Catalog 6 Items Display Verification | Kiểm tra toàn vẹn danh mục 6 sản phẩm (Tên, Giá, Ảnh) |
 | 7 | `TC-PROD-02` | Product | Positive | Test 4 Product Sorting Options | Kiểm tra thuật toán lọc A-Z, Z-A, Price Low-High, High-Low |
 | 8 | `TC-PROD-03` | Product | Positive | Add to Cart Toggle to Remove & Badge Increment | Đảm bảo chuyển trạng thái nút & đồng bộ số lượng giỏ hàng |
@@ -68,6 +68,47 @@ Tài liệu Chiến lược Kiểm thử cho dự án **AI QA Assistant** trên 
 
 ## 4. MÔ TRƯỜNG & CÔNG CỤ THỰC THI (ENVIRONMENT & TOOLS)
 - **Đối tượng thử nghiệm**: Website SauceDemo (`https://www.saucedemo.com`)
-- **Trình duyệt áp dụng**: Chrome / Chromium Headless & Headed
+- **Trình duyệt áp dụng (Cross-Browser Testing)**: Chromium, Firefox và WebKit.
 - **Công cụ tự động hóa**: Playwright Framework (Node.js)
 - **Quản lý bằng chứng**: Tự động lưu ảnh chụp màn hình (`test-results/screenshots/*.png`) và ghi vết log thực thi (`test-results/logs/execution.log`).
+
+---
+
+## 5. PHƯƠNG PHÁP PHÂN LOẠI LỖI KHI THỰC THI (FAILURE CLASSIFICATION METHODOLOGY)
+Trong quá trình tự động hóa kiểm thử, dự án phân định rõ 2 loại kết quả lỗi:
+1. **Automation Failure**: 
+   - Lỗi do kịch bản test (ví dụ: selector không đủ phạm vi gây lỗi Playwright strict mode ở `TC-CART-01`).
+   - Xử lý: Hiệu đính bộ chọn DOM (`.cart_item .inventory_item_name`) để kịch bản thực thi chính xác -> PASS trên cả 3 trình duyệt.
+2. **Application Defect**:
+   - Lỗi do ứng dụng (ví dụ: `TC-PROD-04` vỡ ảnh `problem_user` và `TC-CHK-03` hệ thống chấp nhận Zip code số âm).
+   - Xử lý: Giữ nguyên assertion kỳ vọng chuẩn QA -> Kịch bản kiểm thử **FAIL** để chứng minh bộ kiểm thử tự động có khả năng phát hiện Bug thực tế của ứng dụng.
+
+---
+
+## 6. KẾT QUẢ THỰC THI (TEST EXECUTION RESULTS)
+
+Bộ 15 Test Cases được thực thi tự động bằng Playwright trên 3 browser: Chromium, Firefox và WebKit.
+
+### Initial Execution
+- **Tổng số lượt thực thi**: **45** (15 Test Cases × 3 browsers)
+- **Passed**: **38**
+- **Failed**: **7**
+
+Các failure được phân tích và chia thành:
+- **`TC-CART-01`**: Automation Failure do locator `.inventory_item_name` khớp nhiều phần tử và gây Playwright Strict Mode violation.
+- **`TC-PROD-04`**: Application Defect được phát hiện trên cả Chromium, Firefox và WebKit.
+- **`TC-CHK-03`**: Application Defect được phát hiện trên cả Chromium, Firefox và WebKit.
+
+### Automation Failure Resolution
+`TC-CART-01` được hiệu đính bằng cách giới hạn selector vào phạm vi Cart:
+```text
+.cart_item .inventory_item_name
+```
+Sau khi sửa, `TC-CART-01` đã PASS trên cả 3 browsers.
+
+### Confirmed Application Defects
+Hai lỗi ứng dụng được xác nhận:
+1. **`TC-PROD-04`**: Tài khoản `problem_user` sử dụng broken/wrong image asset chứa `sl-404`.
+2. **`TC-CHK-03`**: Hệ thống chấp nhận Postal Code âm `-12345` và cho phép chuyển sang Checkout Overview.
+
+Các lỗi trên được giữ nguyên trong automated test để đảm bảo hệ thống kiểm thử có khả năng phát hiện application defect.
