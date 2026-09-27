@@ -20,6 +20,12 @@ Tài liệu ghi chép chi tiết quá trình ứng dụng AI, kiểm chứng th�
 3. **Chuẩn hóa Báo cáo lỗi (Bug Report Formatting)**:
     - AI hỗ trợ phân tích các bất thường được phát hiện trong quá trình kiểm thử, như việc Postal Code `-12345` được chấp nhận và hình ảnh lỗi của `problem_user`.
    - Các kết quả phân tích này sẽ được sử dụng làm cơ sở để xây dựng Bug Report ở bước tiếp theo.
+4. **Hỗ trợ tự động hóa kiểm thử bằng Playwright**:
+
+   - AI hỗ trợ chuyển đổi 15 Test Cases thành mã kiểm thử Playwright trong `tests/saucedemo.spec.js`.
+   - AI hỗ trợ xây dựng cơ chế chụp Evidence Screenshots và ghi execution log.
+   - AI hỗ trợ xây dựng assertion dựa trên Expected Result của từng Test Case.
+   - Các Test Case được thực thi trên Chromium, Firefox và WebKit để tăng độ bao phủ trình duyệt.
 
 ---
 
@@ -34,7 +40,13 @@ Trong quá trình làm việc, một số đề xuất của AI chưa hoàn toà
    - AI giả định rằng trang Giỏ hàng hiển thị đầy đủ hình ảnh sản phẩm (thumbnails), nhưng khi kiểm tra thực tế phát hiện trang Cart **không hiển thị hình ảnh sản phẩm**.
 4. **Sai biệt giữa Dự đoán của AI và Kết quả Thực tế (AI Prediction ≠ Actual Result - Postal Code Boundary)**:
    - AI ban đầu đề xuất hành vi mong đợi là hệ thống phải từ chối Postal Code âm. Tuy nhiên, khi kiểm tra thực tế, SauceDemo cho phép nhập `-12345` và tiếp tục sang trang Overview. Kết quả thực tế được sử dụng làm cơ sở để xác định đây là một validation defect thay vì chỉ xem đây là giả định của AI.
+5. **Lỗi Selector trong Automation (Automation Failure)**:
 
+   - Trong lần chạy đầu tiên, AI sử dụng selector `.inventory_item_name` cho `TC-CART-01`.
+   - Selector này khớp với nhiều phần tử trên trang và gây lỗi Playwright Strict Mode.
+   - Đây không phải là application defect mà là lỗi trong cách xây dựng automation locator.
+   - Sau khi kiểm tra DOM thực tế, selector được sửa thành `.cart_item .inventory_item_name` để chỉ xác định sản phẩm bên trong Cart.
+   - Sau khi sửa, `TC-CART-01` đã PASS trên Chromium, Firefox và WebKit.
 ---
 
 ## 4. How I Improved AI Output
@@ -49,6 +61,13 @@ Trong quá trình làm việc, một số đề xuất của AI chưa hoàn toà
 3. **Chuyển thông tin sai biệt thành Test Case kiểm thử & Phát hiện Bug thực tế**:
    - Sai biệt về Zip code số âm được ghi nhận trong Test Case `TC-CHK-03` và sử dụng làm cơ sở để phân tích Bug ở bước tiếp theo.
    - Sai biệt về hình ảnh trang Cart được ghi nhận trong Test Case `TC-CART-03` dưới dạng UX Observation thay vì kết luận đây là Defect.
+4. **Phân biệt Automation Failure và Application Defect**:
+
+   - Không phải mọi Test Case FAIL đều được xem là lỗi của hệ thống.
+   - `TC-CART-01` được xác định là Automation Failure do selector không đủ phạm vi.
+   - Sau khi sửa selector, Test Case PASS trên cả 3 browser.
+   - Ngược lại, `TC-PROD-04` và `TC-CHK-03` tiếp tục FAIL sau khi kiểm chứng và được xác định là Application Defects.
+   - Các assertion của hai Test Case này được giữ nguyên để đảm bảo automation có khả năng phát hiện lỗi thực tế thay vì chỉnh test để đạt trạng thái PASS.
 
 ---
 
